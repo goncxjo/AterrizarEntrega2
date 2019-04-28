@@ -1,7 +1,7 @@
 package com.aterrizar.modelo.Usuario;
 
-public class Estandar extends Usuario {
-    public Estandar(String nombre, String apellido, String DNI) {
+public class UsuarioEstandar extends Usuario {
+    public UsuarioEstandar(String nombre, String apellido, int DNI) {
         super(nombre, apellido, DNI);
     }
 }

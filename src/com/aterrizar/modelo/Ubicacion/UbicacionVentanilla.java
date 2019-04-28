@@ -1,5 +1,5 @@
 package com.aterrizar.modelo.Ubicacion;
 
-public class Ventanilla implements Ubicacion {
+public class UbicacionVentanilla implements Ubicacion {
 
 }

@@ -5,20 +5,49 @@ import com.aterrizar.modelo.Vuelo.Vuelo;
 import java.util.List;
 
 public abstract class Usuario {
-     private String nombre;
-     private String apellido;
-     private String DNI;
-     private List<Vuelo> historialVuelos;
+     protected String nombre;
+     protected String apellido;
+     protected int DNI;
+     protected List<Vuelo> historialVuelos;
 
-     public String getNombre() {
-         return nombre;
-     }
-     public String getApellido() {
+    public Usuario(String nombre, String apellido, int DNI) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.DNI = DNI;
+        this.historialVuelos = historialVuelos;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
         return apellido;
-     }
-     public String getDNI() {
-        return DNI;
-     }
+    }
 
-     public double getRecargo() { return 0; }
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public int getDNI() {
+        return DNI;
+    }
+
+    public void setDNI(int DNI) {
+        this.DNI = DNI;
+    }
+
+    public List<Vuelo> getHistorialVuelos() {
+        return historialVuelos;
+    }
+
+    public void setHistorialVuelos(List<Vuelo> historialVuelos) {
+        this.historialVuelos = historialVuelos;
+    }
+
+    public double getRecargo() { return 0; }
 }

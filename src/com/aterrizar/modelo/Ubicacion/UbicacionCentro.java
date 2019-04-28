@@ -1,4 +1,4 @@
 package com.aterrizar.modelo.Ubicacion;
 
-public class Centro implements Ubicacion {
+public class UbicacionCentro implements Ubicacion {
 }
