@@ -2,7 +2,7 @@ package com.aterrizar.modelo.Asiento;
 
 import com.aterrizar.modelo.Usuario.Usuario;
 
-public class Reservado implements Estado {
+public class EstadoAsientoReservado implements EstadoAsiento {
     private Usuario usuario;
 
     public Usuario getUsuario() {

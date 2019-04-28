@@ -1,4 +1,4 @@
 package com.aterrizar.modelo.Asiento;
 
-public class Turista extends Asiento {
+public class AsientoTurista extends Asiento {
 }

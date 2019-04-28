@@ -1,35 +1,44 @@
 package com.aterrizar.modelo.Asiento;
 
-import com.aterrizar.modelo.Ubicacion.IUbicacion;
-import com.aterrizar.modelo.Usuario.Usuario;
+import com.aterrizar.modelo.Ubicacion.Ubicacion;
 
 public abstract class Asiento {
-    private double precio;
-    private boolean reservado = false;
-    private IUbicacion ubicacion;
+    protected double precio;
+    protected double precioTotal;
+    protected Ubicacion ubicacion;
+    protected EstadoAsiento estadoAsiento;
 
-    public boolean estaReservado() {
-        return reservado;
+    public double getPrecio() {
+        return precio;
     }
 
-    public void setReservado(boolean reservado) {
-        this.reservado = reservado;
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
-    public IUbicacion getUbicacion() {
+    public double getPrecioTotal() {
+        return precioTotal;
+    }
+
+    public Ubicacion getUbicacion() {
         return ubicacion;
     }
 
-    public void setUbicacion(IUbicacion ubicacion) {
+    public void setUbicacion(Ubicacion ubicacion) {
         this.ubicacion = ubicacion;
     }
 
-    public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
-
-    public double getPrecioTotal(float porcentaje, Usuario usuario) {
-        return this.precio + (this.precio * porcentaje) + usuario.getRecargo();
+    public EstadoAsiento getEstadoAsiento() {
+        return estadoAsiento;
     }
 
-    public boolean esSuperOferta(float porcentaje, Usuario usuario) { return false; }
+    public void setEstadoAsiento(EstadoAsiento estadoAsiento) {
+        this.estadoAsiento = estadoAsiento;
+    }
+
+    public void calcularPrecioTotal(float porcentajeImpuestos, float recargoUsuario) {
+        this.precioTotal = this.precio + (this.precio * porcentajeImpuestos) + recargoUsuario;
+    }
+
+    public boolean esSuperOferta() { return false; }
 }
