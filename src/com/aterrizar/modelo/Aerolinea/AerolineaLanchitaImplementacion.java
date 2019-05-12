@@ -4,6 +4,7 @@ import com.aterrizar.modelo.Vuelo.Vuelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementación de los métodos proporcionados por la Aerolina "Lanchita" (implements).
@@ -18,7 +19,7 @@ public class AerolineaLanchitaImplementacion extends Aerolinea implements Aeroli
     // TODO: pendiente implementacion
     @Override
     public ArrayList<ArrayList<String>> asientosDisponibles(String origen, String fechaSalida, String horaSalida, String destino, String fechaLlegada, String horaLlegada) {
-        /*
+
         List<Vuelo> query = this.vuelos;
 
         if(origen != null) {
@@ -27,12 +28,11 @@ public class AerolineaLanchitaImplementacion extends Aerolinea implements Aeroli
         if(destino != null) {
             query = query.stream().filter(x -> x.getDestino().contains(destino)).collect(Collectors.toList());
         }
-        */
 
         return null;
     }
 
-    // TODO: pendiente implementacion
+    // TODO: pendiente implementación
     @Override
     public void comprar(String codigoAsiento) {
 

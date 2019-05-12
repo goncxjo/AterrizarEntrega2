@@ -21,4 +21,8 @@ public class Sistema {
 
     // TODO: pendiente implementacion
     public void comprar(Vuelo vuelo, Asiento asiento, Usuario usuario) {}
+
+    public Sistema() {
+        this.comunicador = new Comunicador();
+    }
 }

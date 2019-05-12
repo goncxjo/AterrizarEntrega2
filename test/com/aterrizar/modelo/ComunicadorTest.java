@@ -1,8 +1,5 @@
 package com.aterrizar.modelo;
 
-import com.aterrizar.modelo.Aerolinea.Aerolinea;
-import com.aterrizar.modelo.Aerolinea.AerolineaFakeImplementacion;
-import com.aterrizar.modelo.Aerolinea.AerolineaLanchitaImplementacion;
 import com.aterrizar.modelo.Asiento.AsientoTurista;
 import com.aterrizar.modelo.Ubicacion.UbicacionVentanilla;
 import com.aterrizar.modelo.Usuario.UsuarioEstandar;
@@ -17,15 +14,12 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("Deprecated")
 public class ComunicadorTest {
 
     @Test
     public void buscarVuelos() {
-        Aerolinea[] aerolineas = new Aerolinea[] {
-                new AerolineaLanchitaImplementacion(),
-                new AerolineaFakeImplementacion()
-        };
-        Comunicador comunicador = new Comunicador(aerolineas);
+        Comunicador comunicador = new Comunicador();
 
         FiltroVuelo filtroVuelo = new FiltroVuelo(
                 "BUE",
