@@ -7,5 +7,5 @@ public class UsuarioNoRegistrado extends Usuario {
     }
 
     @Override
-    public double getRecargo() { return 20; }
+    public float getRecargo() { return 20; }
 }

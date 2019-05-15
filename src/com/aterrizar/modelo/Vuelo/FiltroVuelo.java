@@ -3,18 +3,15 @@ package com.aterrizar.modelo.Vuelo;
 import com.aterrizar.modelo.Asiento.Asiento;
 import com.aterrizar.modelo.Ubicacion.Ubicacion;
 
-import java.util.Date;
-import java.util.List;
-
 public class FiltroVuelo {
-    private String origen;
-    private String destino;
-    private Date fechaSalida;
-    private Date fechaLlegada;
-    private Asiento asiento;
-    private Ubicacion ubicacion;
+    protected String origen;
+    protected String destino;
+    protected Asiento asiento;
+    protected Ubicacion ubicacion;
+    private String fechaSalida;
+    private String fechaLlegada;
 
-    public FiltroVuelo(String origen, String destino, Date fechaSalida, Date fechaLlegada, Asiento asiento, Ubicacion ubicacion) {
+    public FiltroVuelo(String origen, String destino, String fechaSalida, String fechaLlegada, Asiento asiento, Ubicacion ubicacion) {
         this.origen = origen;
         this.destino = destino;
         this.fechaSalida = fechaSalida;
@@ -31,11 +28,11 @@ public class FiltroVuelo {
         return destino;
     }
 
-    public Date getFechaSalida() {
+    public String getFechaSalida() {
         return fechaSalida;
     }
 
-    public Date getFechaLlegada() {
+    public String getFechaLlegada() {
         return fechaLlegada;
     }
 

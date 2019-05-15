@@ -1,20 +1,24 @@
 package com.aterrizar.modelo.Usuario;
 
-import com.aterrizar.modelo.Vuelo.Vuelo;
+import com.aterrizar.modelo.Asiento.Asiento;
+import com.aterrizar.modelo.Vuelo.RegistroVuelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Usuario {
-     protected String nombre;
-     protected String apellido;
-     protected int DNI;
-     protected List<Vuelo> historialVuelos;
+    protected String nombre;
+    protected String apellido;
+    protected int DNI;
+    protected List<RegistroVuelo> historialAsientos;
+    protected List<RegistroVuelo> asientosComprados;
 
     public Usuario(String nombre, String apellido, int DNI) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.DNI = DNI;
-        this.historialVuelos = historialVuelos;
+        this.historialAsientos = new ArrayList();
+        this.asientosComprados = new ArrayList();
     }
 
     public String getNombre() {
@@ -41,13 +45,19 @@ public abstract class Usuario {
         this.DNI = DNI;
     }
 
-    public List<Vuelo> getHistorialVuelos() {
-        return historialVuelos;
+    public List<RegistroVuelo> getHistorialAsientos() {
+        return this.historialAsientos;
     }
 
-    public void setHistorialVuelos(List<Vuelo> historialVuelos) {
-        this.historialVuelos = historialVuelos;
+    public void agregarVueloAlHistorial(RegistroVuelo vuelo) { this.historialAsientos.add(vuelo); }
+
+    public List<RegistroVuelo> getAsientosComprados() {
+        return this.asientosComprados;
     }
 
-    public double getRecargo() { return 0; }
+    public void agregarVueloComprado(RegistroVuelo vuelo) { this.asientosComprados.add(vuelo); }
+
+    public float getRecargo() { return 0; }
+
+    public boolean puedeVerSuperOferta(Asiento asiento, double precioTotal) { return false; }
 }
