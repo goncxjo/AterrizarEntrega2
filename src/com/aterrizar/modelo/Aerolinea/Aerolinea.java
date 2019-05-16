@@ -29,6 +29,8 @@ public abstract class Aerolinea {
 
     public List<Asiento> buscarAsientos(FiltroVueloAsiento filtroVueloAsiento) { return new ArrayList(); }
 
+    public List<Asiento> getSuperOfertas(Usuario usuario) { return new ArrayList(); }
+
     public abstract void comprar(String codigoAsiento) throws AsientoNoDisponibleException;
 
     public float getPorcentajeImpuestos() {

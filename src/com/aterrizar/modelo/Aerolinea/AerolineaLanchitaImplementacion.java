@@ -5,6 +5,7 @@ import com.aterrizar.modelo.Asiento.*;
 import com.aterrizar.modelo.Ubicacion.UbicacionCentro;
 import com.aterrizar.modelo.Ubicacion.UbicacionPasillo;
 import com.aterrizar.modelo.Ubicacion.UbicacionVentanilla;
+import com.aterrizar.modelo.Usuario.Usuario;
 import com.aterrizar.modelo.Vuelo.Vuelo;
 import com.aterrizar.util.DateHelper;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class AerolineaLanchitaImplementacion extends AerolineaLanchita {
 
     public AerolineaLanchitaImplementacion() {
-        this.codigoAerolinea = "AL0";
+        this.codigoAerolinea = "AL";
         this.porcentajeImpuestos = 0.15f;
     }
 
@@ -89,6 +90,31 @@ public class AerolineaLanchitaImplementacion extends AerolineaLanchita {
         } else {
             throw new AsientoLanchitaNoDisponibleException("El código de vuelo no es válido");
         }
+    }
+
+    @Override
+    public List<Asiento> getAsientos() {
+        return this.asientos
+                .stream()
+                .filter(asiento -> asiento.getEstado().estaDisponible())
+                .map(asiento -> {
+                    asiento.calcularPrecioTotal(this.porcentajeImpuestos);
+                    return asiento;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Asiento> getSuperOfertas(Usuario usuario) {
+        List<Asiento> superOfertas = new ArrayList();
+
+        for (Asiento asiento : this.asientos) {
+            if (usuario.puedeVerSuperOferta(asiento)) {
+                superOfertas.add(asiento);
+            }
+        }
+
+        return superOfertas;
     }
 
     /**

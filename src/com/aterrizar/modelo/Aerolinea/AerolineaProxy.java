@@ -1,5 +1,6 @@
 package com.aterrizar.modelo.Aerolinea;
 
+import com.aterrizar.exception.AsientoLanchitaNoDisponibleException;
 import com.aterrizar.exception.AsientoNoDisponibleException;
 import com.aterrizar.modelo.Asiento.Asiento;
 import com.aterrizar.modelo.Ubicacion.Ubicacion;
@@ -10,100 +11,106 @@ import com.aterrizar.util.DateHelper;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * El comunicador nos proporciona herramientas
- * para comunicarnos entre aterrizar.com y las aerolineas.
- * */
 public class AerolineaProxy extends Aerolinea {
     private AerolineaLanchita aerolineaLanchita;
-    private Map<String, String> diccionarioDestinos;
+    private Map<String, String> diccionarioDestinos = getDiccionarioDestinos();
+    private List<Asiento> superOfertas = new ArrayList();
 
     public AerolineaProxy() {
-        generarDiccionarioDestinos();
         aerolineaLanchita = new AerolineaLanchitaImplementacion();
     }
 
     public AerolineaProxy(AerolineaLanchita aerolineaLanchita) {
-        generarDiccionarioDestinos();
         this.aerolineaLanchita = aerolineaLanchita;
     }
 
-    private void generarDiccionarioDestinos() {
-        diccionarioDestinos = new HashMap();
-        diccionarioDestinos.put("BUE", "Buenos Aires");
-        diccionarioDestinos.put("BAR", "Barcelona");
-        diccionarioDestinos.put("LA", "Los Angeles");
-        diccionarioDestinos.put("NY", "Nueva York");
-        diccionarioDestinos.put("TOK", "Tokyo");
-        diccionarioDestinos.put("MIA", "Miami");
+    private Map<String,String> getDiccionarioDestinos() {
+        Map<String,String> destinos = new HashMap();
+
+        destinos.put("BUE", "Buenos Aires");
+        destinos.put("BAR", "Barcelona");
+        destinos.put("LA", "Los Angeles");
+        destinos.put("NY", "Nueva York");
+        destinos.put("TOK", "Tokyo");
+        destinos.put("MIA", "Miami");
+
+        return destinos;
     }
 
+    /**
+     * Obtiene todos los asientos de todas las aerolineas disponibles en aterrizar por criterio del usuario.
+     * @param filtroVueloAsiento criterio de busqueda por el usuario
+     * */
     @Override
     public List<Asiento> buscarAsientos(FiltroVueloAsiento filtroVueloAsiento) {
         asientos.clear();
 
-        asientos.addAll(getAsientosConImpuestos(aerolineaLanchita));
-        //asientos.addAll(getAsientosConImpuestos(aerolineaFake));
+        asientos.addAll(aerolineaLanchita.getAsientos());
 
         return filtrarAsientos(filtroVueloAsiento);
     }
 
+    /**
+     * Obtiene las super ofertas de todas las aerolineas disponibles en aterrizar.
+     * @param usuario es necesario para saber si puede ver o no super ofertas.
+     * */
+    @Override
     public List<Asiento> getSuperOfertas(Usuario usuario) {
-        List<Asiento> superOfertas = new ArrayList();
-        List<Asiento> asientosSinFiltros = buscarAsientos(new FiltroVueloAsiento());
+        superOfertas.clear();
 
-        for (Asiento asiento : asientosSinFiltros) {
-            if (usuario.puedeVerSuperOferta(asiento)) {
-                superOfertas.add(asiento);
-            }
-        }
+        superOfertas.addAll(aerolineaLanchita.getSuperOfertas(usuario));
 
         return superOfertas;
     }
 
+    /**
+     * Este método reserva un asiento segun la aerolina a la cual pertenezca.
+     * */
     @Override
     public void comprar(String codigoAsiento) throws AsientoNoDisponibleException {
+        String codigoAerolinea = codigoAsiento.split("/")[0];
 
+        if(this.aerolineaLanchita.getCodigoAerolinea().contains(codigoAerolinea)) {
+            try {
+                this.aerolineaLanchita.comprar(codigoAsiento);
+            } catch (AsientoLanchitaNoDisponibleException e) {
+                throw new AsientoNoDisponibleException("Aerolinea Lanchita: " + e.getMessage());
+            }
+        } else {
+            throw new AsientoNoDisponibleException("El asiento no existe");
+        }
     }
 
-    private List<Asiento> getAsientosConImpuestos(Aerolinea aerolinea) {
-        return aerolinea
-                .getAsientos()
-                .stream()
-                .map(a -> sumarImpuestosAsientos(a, aerolinea))
-                .collect(Collectors.toList());
-    }
-
-    private Asiento sumarImpuestosAsientos(Asiento asiento, Aerolinea aerolinea) {
-        asiento.calcularPrecioTotal(aerolinea.porcentajeImpuestos);
-        return asiento;
-    }
-
+    /**
+     * Filtra los asientos según criterio del usuario
+     * @return asientos filtrados.
+     * */
     private List<Asiento> filtrarAsientos(FiltroVueloAsiento filtroVueloAsiento) {
+
         filtrarAsientosPorOrigen(diccionarioDestinos.get(filtroVueloAsiento.getOrigen()));
         filtrarAsientosPorDestino(diccionarioDestinos.get(filtroVueloAsiento.getDestino()));
         filtrarAsientosPorFechaSalida(filtroVueloAsiento.getFechaSalida());
         filtrarAsientosPorFechaLlegada(filtroVueloAsiento.getFechaLlegada());
-        filtrarAsientosPorAsiento(filtroVueloAsiento.getAsiento());
-        filtrarAsientosPorUbicacion(filtroVueloAsiento.getUbicacion());
+        filtrarAsientosPorTipoAsiento(filtroVueloAsiento.getAsiento());
+        filtrarAsientosPorTipoUbicacion(filtroVueloAsiento.getUbicacion());
         
         return asientos;
     }
 
-    private void filtrarAsientosPorUbicacion(Ubicacion ubicacion) {
-        if(ubicacion != null) {
+    private void filtrarAsientosPorOrigen(String origen) {
+        if(origen != null) {
             asientos = asientos
                     .stream()
-                    .filter(a -> a.getUbicacion().getClass() == ubicacion.getClass())
+                    .filter(a -> a.getVuelo().getOrigen().contains(origen))
                     .collect(Collectors.toList());
         }
     }
 
-    private void filtrarAsientosPorAsiento(Asiento asiento) {
-        if(asiento != null) {
+    private void filtrarAsientosPorDestino(String destino) {
+        if(destino != null) {
             asientos = asientos
                     .stream()
-                    .filter(a -> a.getClass() == asiento.getClass())
+                    .filter(a -> a.getVuelo().getDestino().contains(destino))
                     .collect(Collectors.toList());
         }
     }
@@ -126,20 +133,20 @@ public class AerolineaProxy extends Aerolinea {
         }
     }
 
-    private void filtrarAsientosPorOrigen(String origen) {
-        if(origen != null) {
+    private void filtrarAsientosPorTipoUbicacion(Ubicacion ubicacion) {
+        if(ubicacion != null) {
             asientos = asientos
                     .stream()
-                    .filter(a -> a.getVuelo().getOrigen().contains(origen))
+                    .filter(a -> a.getUbicacion().getClass().equals(ubicacion.getClass()))
                     .collect(Collectors.toList());
         }
     }
 
-    private void filtrarAsientosPorDestino(String destino) {
-        if(destino != null) {
+    private void filtrarAsientosPorTipoAsiento(Asiento asiento) {
+        if(asiento != null) {
             asientos = asientos
                     .stream()
-                    .filter(a -> a.getVuelo().getDestino().contains(destino))
+                    .filter(a -> a.getClass().equals(asiento.getClass()))
                     .collect(Collectors.toList());
         }
     }
