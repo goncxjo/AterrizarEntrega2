@@ -16,22 +16,34 @@ public class Sistema {
 
     public void registrarUsuario(String nombre, String apellido, int DNI) {}
 
+    /**
+     * Obtiene todos los asientos disponibles en aerolinea, según criterio del usuario.
+     * Además, incluye las super ofertas disponibles para el usuario.
+     * @param filtroVueloAsiento criterio de busqueda del usuario
+     * @param usuario usuario que realiza la consulta
+     * @return asientos filtrados + super ofertas
+     * */
     public List<Asiento> buscarAsientos(FiltroVueloAsiento filtroVueloAsiento, Usuario usuario) {
-        List<Asiento> vuelos = new ArrayList<>();
-        vuelos.addAll(this.aerolineaProxy.buscarAsientos(filtroVueloAsiento));
-        vuelos.addAll(this.aerolineaProxy.getSuperOfertas(usuario));
+        List<Asiento> asientos = new ArrayList<>();
 
-        return null;
+        asientos.addAll(this.aerolineaProxy.buscarAsientos(filtroVueloAsiento));
+        asientos.addAll(this.aerolineaProxy.getSuperOfertas(usuario));
+
+        return asientos;
     }
 
-    public void comprar(Aerolinea aerolinea, Asiento asiento, Usuario usuario, FiltroVueloAsiento filtroVueloAsiento) throws AsientoNoDisponibleException {
-        try {
-            aerolinea.comprar(asiento.getVuelo().getCodigoVuelo());
-            usuario.agregarVueloComprado(asiento);
-            usuario.agregarVueloAlHistorial(filtroVueloAsiento);
-        } catch (AsientoLanchitaNoDisponibleException e) {
-            throw new AsientoNoDisponibleException("Aerolinea Lanchita: " + e.getMessage());
-        }
+    /**
+     * Este método reserva un asiento,
+     * agrega dicho asiento a los asientos comprados por el usuario y
+     * actualiza el historial de búsqueda del usuario.
+     * @param asiento asiento a comprar
+     * @param usuario usuario que realiza la compra
+     * @param filtroVueloAsiento criterio de busqueda del usuario
+     * */
+    public void comprarAsiento(Asiento asiento, Usuario usuario, FiltroVueloAsiento filtroVueloAsiento) throws AsientoNoDisponibleException {
+        this.aerolineaProxy.comprar(asiento.getCodigoAsiento());
+        usuario.agregarVueloComprado(asiento);
+        usuario.agregarVueloAlHistorial(filtroVueloAsiento);
     }
 
     public Sistema() {
