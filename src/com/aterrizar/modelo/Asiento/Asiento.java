@@ -17,6 +17,7 @@ public abstract class Asiento {
         this.nroAsiento = siguienteNro;
         this.vuelo = vuelo;
         this.precio = precio;
+        this.precioTotal = precio;
         this.ubicacion = ubicacion;
         this.estadoAsiento = estadoAsiento;
     }
