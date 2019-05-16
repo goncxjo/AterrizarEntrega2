@@ -29,7 +29,7 @@ public class Vuelo {
         this.siguienteNro += 1;
     }
 
-    public String getCodigoVuelo() { return this.codigoAerolinea + this.nroVuelo; }
+    public String getCodigoVuelo() { return this.codigoAerolinea + "/" + this.nroVuelo; }
 
     public String getOrigen() { return origen; }
 
