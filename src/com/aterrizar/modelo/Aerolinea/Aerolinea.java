@@ -3,8 +3,7 @@ package com.aterrizar.modelo.Aerolinea;
 import com.aterrizar.exception.AsientoNoDisponibleException;
 import com.aterrizar.modelo.Asiento.Asiento;
 import com.aterrizar.modelo.Usuario.Usuario;
-import com.aterrizar.modelo.Vuelo.FiltroVuelo;
-import com.aterrizar.modelo.Vuelo.RegistroVuelo;
+import com.aterrizar.modelo.FiltroVueloAsiento;
 import com.aterrizar.modelo.Vuelo.Vuelo;
 
 import java.util.ArrayList;
@@ -15,13 +14,22 @@ import java.util.List;
  * para toda aerolinea que haya firmado con aterrizar.com
  * */
 public abstract class Aerolinea {
+    protected String codigoAerolinea;
     protected float porcentajeImpuestos;
     protected List<Vuelo> vuelos = new ArrayList();
     protected List<Asiento> asientos = new ArrayList();
 
-    public List<RegistroVuelo> buscarVuelos(FiltroVuelo filtroVuelo, Usuario usuario) { return new ArrayList(); }
+    public String getCodigoAerolinea() {
+        return codigoAerolinea;
+    }
 
-    public void comprar(RegistroVuelo vuelo, Usuario usuario) throws AsientoNoDisponibleException {}
+    public void setCodigoAerolinea(String codigoAerolinea) {
+        this.codigoAerolinea = codigoAerolinea;
+    }
+
+    public List<Asiento> buscarAsientos(FiltroVueloAsiento filtroVueloAsiento) { return new ArrayList(); }
+
+    public abstract void comprar(String codigoAsiento) throws AsientoNoDisponibleException;
 
     public float getPorcentajeImpuestos() {
         return porcentajeImpuestos;

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class AerolineaLanchitaImplementacion extends AerolineaLanchita {
 
     public AerolineaLanchitaImplementacion() {
+        this.codigoAerolinea = "AL0";
         this.porcentajeImpuestos = 0.15f;
     }
 
@@ -56,7 +57,7 @@ public class AerolineaLanchitaImplementacion extends AerolineaLanchita {
         return this.asientos
                 .stream()
                 .filter(asiento -> asiento.getEstado().estaDisponible())
-                .filter(asiento -> listaCodigoVuelos.contains(asiento.getCodigoVuelo()))
+                .filter(asiento -> listaCodigoVuelos.contains(asiento.getVuelo().getCodigoVuelo()))
                 .map(asiento -> this.getInformacion(asiento))
                 .collect(Collectors.toList());
     }
@@ -96,9 +97,10 @@ public class AerolineaLanchitaImplementacion extends AerolineaLanchita {
      * */
     private List<String> getInformacion(Asiento asiento) {
         ArrayList<String> asientoDisponible  = new ArrayList<>();
+        asiento.calcularPrecioTotal(this.porcentajeImpuestos);
 
         asientoDisponible.add(asiento.getCodigoAsiento());
-        asientoDisponible.add(Double.toString(asiento.getPrecio() + asiento.getImpuesto(this.porcentajeImpuestos)));
+        asientoDisponible.add(Double.toString(asiento.getPrecioTotal()));
         asientoDisponible.add(getCodigo(asiento));
         asientoDisponible.add(getCodigoUbicacion(asiento));
         asientoDisponible.add(getEstado(asiento));

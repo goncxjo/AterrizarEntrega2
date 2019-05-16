@@ -20,6 +20,15 @@ public class FiltroVuelo {
         this.ubicacion = ubicacion;
     }
 
+    public FiltroVuelo() {
+        this.origen = null;
+        this.destino = null;
+        this.fechaSalida = null;
+        this.fechaLlegada = null;
+        this.asiento = null;
+        this.ubicacion = null;
+    }
+
     public String getOrigen() {
         return origen;
     }
