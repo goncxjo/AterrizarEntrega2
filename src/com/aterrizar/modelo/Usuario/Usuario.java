@@ -22,6 +22,14 @@ public abstract class Usuario {
         this.asientosComprados = new ArrayList();
     }
 
+    public Usuario(Usuario usuario) {
+        this.nombre = usuario.getNombre();
+        this.apellido = usuario.getApellido();
+        this.DNI = usuario.getDNI();
+        this.historialAsientos = usuario.getHistorialAsientos();
+        this.asientosComprados = usuario.getAsientosComprados();
+    }
+
     public Usuario() {}
 
     public String getNombre() {
@@ -54,9 +62,7 @@ public abstract class Usuario {
 
     public void agregarVueloAlHistorial(FiltroVueloAsiento vuelo) { this.historialAsientos.add(vuelo); }
 
-    public List<Asiento> getAsientosComprados() {
-        return this.asientosComprados;
-    }
+    public List<Asiento> getAsientosComprados() { return this.asientosComprados; }
 
     public void agregarVueloComprado(Asiento asiento) { this.asientosComprados.add(asiento); }
 
@@ -65,17 +71,7 @@ public abstract class Usuario {
     public boolean puedeVerSuperOferta(Asiento asiento) { return false; }
 
     public Usuario actualizarTipo(Usuario nuevoUsuario) throws TipoUsuarioNoDisponibleException {
-        Usuario usuario;
-
-        if(this.getClass() == UsuarioNoRegistrado.class && nuevoUsuario instanceof UsuarioEstandar) {
-            usuario = new UsuarioEstandar(this.nombre, this.apellido, this.DNI);
-        } else if(this.getClass() != UsuarioNoRegistrado.class && nuevoUsuario instanceof UsuarioVIP) {
-            usuario = new UsuarioVIP(this.nombre, this.apellido, this.DNI);
-        } else {
-            throw new TipoUsuarioNoDisponibleException("No es posible actualizar el tipo del usuario.");
-        }
-
-        return usuario;
+        throw new TipoUsuarioNoDisponibleException("No existe el usuario solicitado");
     }
 }
 
