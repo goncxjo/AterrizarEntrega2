@@ -1,12 +1,11 @@
 package com.aterrizar.modelo;
 
+import com.aterrizar.exception.AsientoLanchitaNoDisponibleException;
+import com.aterrizar.exception.AsientoNoDisponibleException;
 import com.aterrizar.modelo.Aerolinea.Aerolinea;
 import com.aterrizar.modelo.Aerolinea.AerolineaProxy;
 import com.aterrizar.modelo.Asiento.Asiento;
 import com.aterrizar.modelo.Usuario.Usuario;
-import com.aterrizar.modelo.Vuelo.FiltroVuelo;
-import com.aterrizar.modelo.Vuelo.RegistroVuelo;
-import com.aterrizar.modelo.Vuelo.Vuelo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +13,26 @@ import java.util.List;
 public class Sistema {
     AerolineaProxy aerolineaProxy;
 
-    // TODO: pendiente implementacion
+
     public void registrarUsuario(String nombre, String apellido, int DNI) {}
 
-    public List<RegistroVuelo> buscarVuelos(FiltroVuelo filtroVuelo, Usuario usuario) {
-        Aerolinea aerolinea = new AerolineaProxy();
-
-        List<RegistroVuelo> vuelos = new ArrayList<>();
-        vuelos.addAll(
-                aerolinea.buscarVuelos(filtroVuelo, usuario)
-        );
+    public List<Asiento> buscarAsientos(FiltroVueloAsiento filtroVueloAsiento, Usuario usuario) {
+        List<Asiento> vuelos = new ArrayList<>();
+        vuelos.addAll(this.aerolineaProxy.buscarAsientos(filtroVueloAsiento));
+        vuelos.addAll(this.aerolineaProxy.getSuperOfertas(usuario));
 
         return null;
     }
 
-    // TODO: pendiente implementacion
-    public void comprar(Vuelo vuelo, Asiento asiento, Usuario usuario) {}
+    public void comprar(Aerolinea aerolinea, Asiento asiento, Usuario usuario, FiltroVueloAsiento filtroVueloAsiento) throws AsientoNoDisponibleException {
+        try {
+            aerolinea.comprar(asiento.getVuelo().getCodigoVuelo());
+            usuario.agregarVueloComprado(asiento);
+            usuario.agregarVueloAlHistorial(filtroVueloAsiento);
+        } catch (AsientoLanchitaNoDisponibleException e) {
+            throw new AsientoNoDisponibleException("Aerolinea Lanchita: " + e.getMessage());
+        }
+    }
 
     public Sistema() {
         this.aerolineaProxy = new AerolineaProxy();

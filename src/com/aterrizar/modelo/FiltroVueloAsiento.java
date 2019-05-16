@@ -1,9 +1,9 @@
-package com.aterrizar.modelo.Vuelo;
+package com.aterrizar.modelo;
 
 import com.aterrizar.modelo.Asiento.Asiento;
 import com.aterrizar.modelo.Ubicacion.Ubicacion;
 
-public class FiltroVuelo {
+public class FiltroVueloAsiento {
     protected String origen;
     protected String destino;
     protected Asiento asiento;
@@ -11,7 +11,7 @@ public class FiltroVuelo {
     private String fechaSalida;
     private String fechaLlegada;
 
-    public FiltroVuelo(String origen, String destino, String fechaSalida, String fechaLlegada, Asiento asiento, Ubicacion ubicacion) {
+    public FiltroVueloAsiento(String origen, String destino, String fechaSalida, String fechaLlegada, Asiento asiento, Ubicacion ubicacion) {
         this.origen = origen;
         this.destino = destino;
         this.fechaSalida = fechaSalida;
@@ -20,7 +20,7 @@ public class FiltroVuelo {
         this.ubicacion = ubicacion;
     }
 
-    public FiltroVuelo() {
+    public FiltroVueloAsiento() {
         this.origen = null;
         this.destino = null;
         this.fechaSalida = null;
