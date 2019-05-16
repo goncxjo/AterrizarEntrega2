@@ -4,17 +4,18 @@ import com.aterrizar.modelo.Ubicacion.Ubicacion;
 import com.aterrizar.modelo.Vuelo.Vuelo;
 
 public abstract class Asiento {
-    protected String codigoVuelo;
+    protected Vuelo vuelo;
     static protected int siguienteNro = 0;
     protected int nroAsiento;
     protected double precio;
+    protected double precioTotal;
     protected Ubicacion ubicacion;
     protected EstadoAsiento estadoAsiento;
 
     public Asiento(Vuelo vuelo, double precio, Ubicacion ubicacion, EstadoAsiento estadoAsiento) {
         this.siguienteNro += 1;
         this.nroAsiento = siguienteNro;
-        this.codigoVuelo = vuelo.getCodigoVuelo();
+        this.vuelo = vuelo;
         this.precio = precio;
         this.ubicacion = ubicacion;
         this.estadoAsiento = estadoAsiento;
@@ -24,16 +25,20 @@ public abstract class Asiento {
         this.siguienteNro += 1;
     }
 
-    public String getCodigoVuelo() {
-        return codigoVuelo;
+    public Vuelo getVuelo() {
+        return this.vuelo;
     }
 
     public String getCodigoAsiento() {
-        return this.codigoVuelo + "-" + this.nroAsiento;
+        return this.vuelo.getCodigoVuelo() + "-" + this.nroAsiento;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrecioTotal() {
+        return precioTotal;
+    }
+
+    public void calcularPrecioTotal(double porcentajeImpuestos) {
+        this.precioTotal = this.precio + getImpuesto(porcentajeImpuestos);
     }
 
     public double getImpuesto(double porcentajeImpuestos) {
