@@ -3,7 +3,7 @@ package com.aterrizar.modelo.Vuelo;
 import java.util.Date;
 
 public class Vuelo {
-    private String nombreVuelo = "AL0";
+    private String codigoAerolinea;
     static private int siguienteNro = 0;
     private int nroVuelo;
     private String origen;
@@ -11,8 +11,9 @@ public class Vuelo {
     private Date fechaSalida;
     private Date fechaLlegada;
 
-    public Vuelo(String origen, String destino, Date fechaSalida, Date fechaLlegada) {
+    public Vuelo(String codigoAerolinea, String origen, String destino, Date fechaSalida, Date fechaLlegada) {
         this.siguienteNro += 1;
+        this.codigoAerolinea = codigoAerolinea;
         this.nroVuelo = siguienteNro;
         this.origen = origen;
         this.destino = destino;
@@ -20,11 +21,15 @@ public class Vuelo {
         this.fechaLlegada = fechaLlegada;
     }
 
+    public String getCodigoAerolinea() {
+        return codigoAerolinea;
+    }
+
     public Vuelo() {
         this.siguienteNro += 1;
     }
 
-    public String getCodigoVuelo() { return this.nombreVuelo + this.nroVuelo; }
+    public String getCodigoVuelo() { return this.codigoAerolinea + this.nroVuelo; }
 
     public String getOrigen() { return origen; }
 
