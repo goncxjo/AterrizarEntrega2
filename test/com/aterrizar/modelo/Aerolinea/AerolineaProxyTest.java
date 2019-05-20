@@ -1,14 +1,12 @@
-package com.aterrizar.modelo;
+package com.aterrizar.modelo.Aerolinea;
 
 import com.aterrizar.exception.AsientoNoDisponibleException;
-import com.aterrizar.modelo.Aerolinea.AerolineaLanchitaImplementacion;
-import com.aterrizar.modelo.Aerolinea.AerolineaProxy;
 import com.aterrizar.modelo.Asiento.*;
+import com.aterrizar.modelo.FiltroVueloAsiento;
 import com.aterrizar.modelo.Ubicacion.UbicacionCentro;
 import com.aterrizar.modelo.Ubicacion.UbicacionPasillo;
 import com.aterrizar.modelo.Ubicacion.UbicacionVentanilla;
 import com.aterrizar.modelo.Usuario.Usuario;
-import com.aterrizar.modelo.Usuario.UsuarioEstandar;
 import com.aterrizar.modelo.Usuario.UsuarioNoRegistrado;
 import com.aterrizar.modelo.Vuelo.Vuelo;
 import com.aterrizar.util.DateHelper;
