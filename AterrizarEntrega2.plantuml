@@ -1,0 +1,307 @@
+@startuml
+
+title __Aterrizar.com's Class Diagram (entrega 2)__\n
+
+  package com.aterrizar.modelo {
+    package com.aterrizar.modelo.Aerolinea {
+      abstract class Aerolinea {
+          # codigoAerolinea : String
+          # porcentajeImpuestos : float
+          # vuelos : List<Vuelo>
+          # asientos : List<Asiento>
+          + getCodigoAerolinea()
+          + setCodigoAerolinea()
+          + buscarAsientos()
+          + getSuperOfertas()
+          {abstract} + comprar()
+          + getPorcentajeImpuestos()
+          + getVuelos()
+          + agregarVuelo()
+          + getAsientos()
+          + agregarAsiento()
+      }
+
+      abstract class AerolineaLanchita {
+          {abstract} ~ asientosDisponibles()
+          {abstract} + comprar()
+      }
+
+      class AerolineaLanchitaImplementacion {
+          + AerolineaLanchitaImplementacion()
+          + asientosDisponibles()
+          + comprar()
+          + getAsientos()
+          + getSuperOfertas()
+          - getInformacion()
+          - getEstado()
+          - getCodigoUbicacion()
+          - getCodigo()
+      }
+
+      class AerolineaProxy {
+          - diccionarioDestinos : Map<String, String>
+          - superOfertas : List<Asiento>
+          + AerolineaProxy()
+          + AerolineaProxy()
+          - getDiccionarioDestinos()
+          + buscarAsientos()
+          + getSuperOfertas()
+          + comprar()
+          - filtrarAsientos()
+          - filtrarAsientosPorOrigen()
+          - filtrarAsientosPorDestino()
+          - filtrarAsientosPorFechaSalida()
+          - filtrarAsientosPorFechaLlegada()
+          - filtrarAsientosPorTipoUbicacion()
+          - filtrarAsientosPorTipoAsiento()
+      }
+    }
+
+    package com.aterrizar.modelo.Asiento {
+      abstract class Asiento {
+          {static} # siguienteNro : int
+          # nroAsiento : int
+          # precio : double
+          # precioTotal : double
+          + Asiento()
+          + Asiento()
+          + getVuelo()
+          + getCodigoAsiento()
+          + getPrecioTotal()
+          + calcularPrecioTotal()
+          + getImpuesto()
+          + getUbicacion()
+          + setUbicacion()
+          + getEstado()
+          + setEstado()
+      }
+    
+      class AsientoEjecutivo {
+          + AsientoEjecutivo()
+          + AsientoEjecutivo()
+      }
+    
+      class AsientoPrimeraClase {
+          + AsientoPrimeraClase()
+          + AsientoPrimeraClase()
+      }
+    
+      class AsientoTurista {
+          + AsientoTurista()
+          + AsientoTurista()
+      }
+    
+      interface EstadoAsiento {
+          {abstract} + estaDisponible()
+      }
+    
+      class EstadoAsientoDisponible {
+          + estaDisponible()
+      }
+    
+      class EstadoAsientoReservado {
+          + estaDisponible()
+      }
+    }
+
+    class FiltroVueloAsiento {
+        # origen : String
+        # destino : String
+        - fechaSalida : String
+        - fechaLlegada : String
+        + FiltroVueloAsiento()
+        + FiltroVueloAsiento()
+        + getOrigen()
+        + getDestino()
+        + getFechaSalida()
+        + getFechaLlegada()
+        + getAsiento()
+        + getUbicacion()
+    }
+
+    class Sistema {
+        + registrarUsuario()
+        + buscarAsientos()
+        + comprarAsiento()
+        + Sistema()
+    }
+  }
+
+  package com.aterrizar.modelo {
+    package com.aterrizar.modelo.Ubicacion {
+      interface Ubicacion {
+      }
+
+      class UbicacionCentro {
+      }
+
+      class UbicacionPasillo {
+      }
+
+      class UbicacionVentanilla {
+      }
+    }
+
+    package com.aterrizar.modelo.Usuario {
+      abstract class Usuario {
+          # nombre : String
+          # apellido : String
+          # DNI : int
+          # historialAsientos : List<FiltroVueloAsiento>
+          # asientosComprados : List<Asiento>
+          + Usuario()
+          + Usuario()
+          + Usuario()
+          + getNombre()
+          + setNombre()
+          + getApellido()
+          + setApellido()
+          + getDNI()
+          + setDNI()
+          + getHistorialAsientos()
+          + agregarVueloAlHistorial()
+          + getAsientosComprados()
+          + agregarVueloComprado()
+          + getRecargo()
+          + puedeVerSuperOferta()
+          + actualizarTipo()
+      }
+
+      class UsuarioEstandar {
+          + UsuarioEstandar()
+          + UsuarioEstandar()
+          + UsuarioEstandar()
+          + puedeSerUsuarioVIP()
+          + actualizarTipo()
+      }
+
+      class UsuarioNoRegistrado {
+          + UsuarioNoRegistrado()
+          + UsuarioNoRegistrado()
+          + UsuarioNoRegistrado()
+          + getRecargo()
+          + actualizarTipo()
+      }
+
+      class UsuarioVIP {
+          + UsuarioVIP()
+          + UsuarioVIP()
+          + UsuarioVIP()
+          + puedeVerSuperOferta()
+          + actualizarTipo()
+      }
+    }
+
+    package com.aterrizar.modelo.Vuelo {
+      class Vuelo {
+          - codigoAerolinea : String
+          {static} - siguienteNro : int
+          - nroVuelo : int
+          - origen : String
+          - destino : String
+          - fechaSalida : Date
+          - fechaLlegada : Date
+          + Vuelo()
+          + getCodigoAerolinea()
+          + Vuelo()
+          + getCodigoVuelo()
+          + getOrigen()
+          + getFechaSalida()
+          + getDestino()
+          + getFechaLlegada()
+      }
+    }
+  }
+
+  package com.aterrizar.exception {
+    class AsientoLanchitaNoDisponibleException {
+        + AsientoLanchitaNoDisponibleException()
+    }
+
+    class AsientoNoDisponibleException {
+        + AsientoNoDisponibleException()
+    }
+
+    class TipoUsuarioNoDisponibleException {
+        + TipoUsuarioNoDisponibleException()
+    }
+  }
+
+  package com.aterrizar.util {
+    class DateHelper {
+        {static} - ISO8601_DATE_REGEXP : String
+        {static} - LATIN_AMERICAN_DATE_REGEXP : String
+        {static} - NORTH_AMERICAN_DATE_REGEXP : String
+        {static} - DAY_IN_MILLISECONDS : long
+        {static} + parseToDate()
+        {static} + parseFromISO8601()
+        {static} + parseFromLatinAmericanDate()
+        {static} + parseFromNorthAmericanDate()
+        {static} - matchDatePattern()
+        {static} + calculateDaysDifference()
+        {static} + isBefore()
+    }
+
+    class PatternDoesntMatchException {
+        + PatternDoesntMatchException()
+    }
+
+    package com.aterrizar.util.date.pattern {
+      abstract class DatePattern {
+          # DATE_PATTERN : String
+          {abstract} ~ buildDateFormat()
+          ~ format()
+          + parse()
+      }
+
+      class ISO8601 {
+          + ISO8601()
+          ~ buildDateFormat()
+      }
+
+      class LatinAmerican {
+          + LatinAmerican()
+          ~ buildDateFormat()
+      }
+
+      class NorthAmerican {
+          + NorthAmerican()
+          ~ buildDateFormat()
+      }
+    }
+  }
+
+  AerolineaLanchita -up-|> Aerolinea
+  AerolineaLanchitaImplementacion -up-|> AerolineaLanchita
+  AerolineaProxy -up-|> Aerolinea
+  AerolineaProxy o-- AerolineaLanchita : aerolineaLanchita
+  Asiento o-- Vuelo : vuelo
+  Asiento o-- Ubicacion : ubicacion
+  Asiento o-- EstadoAsiento : estadoAsiento
+  AsientoEjecutivo -up-|> Asiento
+  AsientoLanchitaNoDisponibleException -up-|> AsientoNoDisponibleException
+  AsientoPrimeraClase -up-|> Asiento
+  AsientoTurista -up-|> Asiento
+  EstadoAsientoDisponible -up-|> EstadoAsiento
+  EstadoAsientoReservado -up-|> EstadoAsiento
+  FiltroVueloAsiento o-- Asiento : asiento
+  FiltroVueloAsiento o-- Ubicacion : ubicacion
+  ISO8601 -up-|> DatePattern
+  LatinAmerican -up-|> DatePattern
+  NorthAmerican -up-|> DatePattern
+  Sistema o-- AerolineaProxy : aerolineaProxy
+  UbicacionCentro -up-|> Ubicacion
+  UbicacionPasillo -up-|> Ubicacion
+  UbicacionVentanilla -up-|> Ubicacion
+  UsuarioEstandar -up-|> Usuario
+  UsuarioNoRegistrado -up-|> Usuario
+  UsuarioVIP -up-|> Usuario
+
+
+right footer
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml
