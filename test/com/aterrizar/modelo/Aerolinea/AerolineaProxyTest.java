@@ -17,7 +17,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@SuppressWarnings("Deprecated")
 public class AerolineaProxyTest {
     private AerolineaProxy aerolineaProxy;
 

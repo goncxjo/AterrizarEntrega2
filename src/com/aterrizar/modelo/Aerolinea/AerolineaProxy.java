@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class AerolineaProxy extends Aerolinea {
     private AerolineaLanchita aerolineaLanchita;
     private Map<String, String> diccionarioDestinos = getDiccionarioDestinos();
-    private List<Asiento> superOfertas = new ArrayList();
+	private List<Asiento> superOfertas = new ArrayList();
 
     public AerolineaProxy() {
         aerolineaLanchita = new AerolineaLanchitaImplementacion();
