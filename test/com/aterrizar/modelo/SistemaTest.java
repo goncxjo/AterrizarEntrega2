@@ -21,6 +21,7 @@ import org.junit.Test;
 
 public class SistemaTest {
 	private Sistema sistema;
+	private AerolineaProxy aerolineaProxy;
 	
 	@Before
     public void generarVuelos() {
@@ -56,7 +57,8 @@ public class SistemaTest {
         aerolineaLanchita.agregarAsiento(new AsientoTurista(vuelo2, 400, new UbicacionVentanilla(), new EstadoAsientoDisponible()));
         aerolineaLanchita.agregarAsiento(new AsientoPrimeraClase(vuelo2, 500, new UbicacionPasillo(), new EstadoAsientoDisponible()));
 
-		this.sistema.setAerolineaProxy(new AerolineaProxy(aerolineaLanchita));
+        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        sistema = new Sistema(aerolineaProxy);
     }
     
 	@Test

@@ -12,10 +12,10 @@ public class Sistema {
     AerolineaProxy aerolineaProxy;
     
     public Sistema() {
-    	this.aerolineaProxy = new AerolineaProxy();
+    	aerolineaProxy = new AerolineaProxy();
     }
     
-    public void setAerolineaProxy(AerolineaProxy aerolineaProxy) {
+    public Sistema(AerolineaProxy aerolineaProxy) {
     	this.aerolineaProxy = aerolineaProxy;
     }
 
