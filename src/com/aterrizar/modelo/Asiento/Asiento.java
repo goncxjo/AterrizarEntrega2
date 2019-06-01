@@ -1,49 +1,37 @@
 package com.aterrizar.modelo.Asiento;
 
-import com.aterrizar.modelo.Ubicacion.Ubicacion;
-import com.aterrizar.modelo.Vuelo.Vuelo;
+import com.aterrizar.modelo.Ubicacion;
 
 public abstract class Asiento {
-    protected Vuelo vuelo;
-    static protected int siguienteNro = 0;
-    protected int nroAsiento;
+    protected String codigoAsiento;
     protected double precio;
-    protected double precioTotal;
     protected Ubicacion ubicacion;
     protected EstadoAsiento estadoAsiento;
 
-    public Asiento(Vuelo vuelo, double precio, Ubicacion ubicacion, EstadoAsiento estadoAsiento) {
-        this.siguienteNro += 1;
-        this.nroAsiento = siguienteNro;
-        this.vuelo = vuelo;
+    public Asiento() {
+    }
+
+    public Asiento(String codigoAsiento, double precio, Ubicacion ubicacion, EstadoAsiento estadoAsiento) {
+        this.codigoAsiento = codigoAsiento;
         this.precio = precio;
-        this.precioTotal = precio;
         this.ubicacion = ubicacion;
         this.estadoAsiento = estadoAsiento;
     }
 
-    public Asiento() {
-        this.siguienteNro += 1;
-    }
-
-    public Vuelo getVuelo() {
-        return this.vuelo;
-    }
-
     public String getCodigoAsiento() {
-        return this.vuelo.getCodigoVuelo() + "-" + this.nroAsiento;
+        return codigoAsiento;
     }
 
-    public double getPrecioTotal() {
-        return precioTotal;
+    public void setCodigoAsiento(String codigoAsiento) {
+        this.codigoAsiento = codigoAsiento;
     }
 
-    public void calcularPrecioTotal(double porcentajeImpuestos) {
-        this.precioTotal = this.precio + getImpuesto(porcentajeImpuestos);
+    public double getPrecio() {
+        return precio;
     }
 
-    public double getImpuesto(double porcentajeImpuestos) {
-        return this.precio * porcentajeImpuestos;
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
     public Ubicacion getUbicacion() {
@@ -54,11 +42,11 @@ public abstract class Asiento {
         this.ubicacion = ubicacion;
     }
 
-    public EstadoAsiento getEstado() {
+    public EstadoAsiento getEstadoAsiento() {
         return estadoAsiento;
     }
 
-    public void setEstado(EstadoAsiento estadoAsiento) {
+    public void setEstadoAsiento(EstadoAsiento estadoAsiento) {
         this.estadoAsiento = estadoAsiento;
     }
 }

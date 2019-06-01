@@ -21,7 +21,7 @@ public class UsuarioVIP extends Usuario {
     public boolean puedeVerSuperOferta(Asiento asiento) {
         boolean puedeVerSuperOferta = false;
 
-        if((asiento instanceof AsientoPrimeraClase && asiento.getPrecioTotal() + this.getRecargo() < 8000) || (asiento instanceof AsientoEjecutivo && asiento.getPrecioTotal() + this.getRecargo() < 4000)) {
+        if((asiento instanceof AsientoPrimeraClase && asiento.getPrecio() + this.getRecargo() < 8000) || (asiento instanceof AsientoEjecutivo && asiento.getPrecio() + this.getRecargo() < 4000)) {
             puedeVerSuperOferta = true;
         }
 

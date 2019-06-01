@@ -1,10 +1,13 @@
 package com.aterrizar.modelo.Usuario;
 
+import com.aterrizar.enumerator.Destino;
 import com.aterrizar.exception.TipoUsuarioNoDisponibleException;
 import com.aterrizar.modelo.Asiento.AsientoEjecutivo;
 import com.aterrizar.modelo.Asiento.EstadoAsientoDisponible;
-import com.aterrizar.modelo.Ubicacion.UbicacionCentro;
-import com.aterrizar.modelo.Vuelo.Vuelo;
+import com.aterrizar.modelo.Ubicacion;
+import com.aterrizar.modelo.Vuelo;
+import com.aterrizar.modelo.VueloAsiento.VueloAsiento;
+import com.aterrizar.modelo.VueloAsiento.VueloAsientoBuilder;
 import com.aterrizar.util.DateHelper;
 import org.junit.Test;
 
@@ -29,18 +32,6 @@ public class UsuarioTest {
     public void actualizarTipo_UsuarioEstandar_Puede_Y_Se_Vuelve_UsuarioVIP() throws TipoUsuarioNoDisponibleException {
         Usuario usuario = new UsuarioEstandar("Ricardo \"EL COMANDANTE\"", "Fort", 37422007);
 
-        Vuelo vuelo = new Vuelo(
-                "AL"
-                ,"Buenos Aires"
-                , "Miami"
-                , DateHelper.parseToDate("13/05/2019")
-                , DateHelper.parseToDate("15/05/2019")
-        );
-
-        usuario.agregarVueloComprado(new AsientoEjecutivo(vuelo, 50000, new UbicacionCentro(), new EstadoAsientoDisponible()));
-        usuario.agregarVueloComprado(new AsientoEjecutivo(vuelo, 50000, new UbicacionCentro(), new EstadoAsientoDisponible()));
-        usuario.agregarVueloComprado(new AsientoEjecutivo(vuelo, 50000, new UbicacionCentro(), new EstadoAsientoDisponible()));
-
         usuario = usuario.actualizarTipo(new UsuarioVIP());
 
         assertEquals("No es usuario VIP", UsuarioVIP.class, usuario.getClass());
@@ -50,17 +41,20 @@ public class UsuarioTest {
     public void actualizarTipo_UsuarioVIP_NoPuedeSer_UsuarioEstandar() throws TipoUsuarioNoDisponibleException {
         Usuario usuario = new UsuarioEstandar("Ricardo \"EL COMANDANTE\"", "Fort", 37422007);
 
-        Vuelo vuelo = new Vuelo(
-                "AL"
-                ,"Buenos Aires"
-                , "Miami"
-                , DateHelper.parseToDate("13/05/2019")
-                , DateHelper.parseToDate("15/05/2019")
-        );
+        VueloAsiento vueloAsiento = new VueloAsientoBuilder("Lanchita")
+                .agregarTipoAsiento(new AsientoEjecutivo())
+                .agregarCodigoAsiento("LCH 005-40")
+                .agregarPrecio(50000)
+                .agregarUbicacion(Ubicacion.Centro)
+                .agregarEstadoAsiento(new EstadoAsientoDisponible())
+                .agregarFecha(DateHelper.parseToDate("13/05/2019"))
+                .agregarOrigen(Destino.BUE)
+                .agregarDestino(Destino.MIA)
+                .build();
 
-        usuario.agregarVueloComprado(new AsientoEjecutivo(vuelo, 50000, new UbicacionCentro(), new EstadoAsientoDisponible()));
-        usuario.agregarVueloComprado(new AsientoEjecutivo(vuelo, 50000, new UbicacionCentro(), new EstadoAsientoDisponible()));
-        usuario.agregarVueloComprado(new AsientoEjecutivo(vuelo, 50000, new UbicacionCentro(), new EstadoAsientoDisponible()));
+        usuario.agregarVueloComprado(vueloAsiento);
+        usuario.agregarVueloComprado(vueloAsiento);
+        usuario.agregarVueloComprado(vueloAsiento);
 
         usuario.actualizarTipo(new UsuarioEstandar());
     }

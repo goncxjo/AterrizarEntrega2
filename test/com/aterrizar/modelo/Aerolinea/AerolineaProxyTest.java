@@ -1,161 +1,191 @@
 package com.aterrizar.modelo.Aerolinea;
 
+import com.aterrizar.enumerator.Destino;
+import com.aterrizar.exception.AsientoLanchitaNoDisponibleException;
 import com.aterrizar.exception.AsientoNoDisponibleException;
-import com.aterrizar.modelo.Asiento.*;
-import com.aterrizar.modelo.FiltroVueloAsiento;
-import com.aterrizar.modelo.Ubicacion.UbicacionCentro;
-import com.aterrizar.modelo.Ubicacion.UbicacionPasillo;
-import com.aterrizar.modelo.Ubicacion.UbicacionVentanilla;
+import com.aterrizar.modelo.Asiento.Asiento;
+import com.aterrizar.modelo.Asiento.AsientoTurista;
+import com.aterrizar.modelo.Ubicacion;
 import com.aterrizar.modelo.Usuario.Usuario;
+import com.aterrizar.modelo.Usuario.UsuarioEstandar;
 import com.aterrizar.modelo.Usuario.UsuarioNoRegistrado;
-import com.aterrizar.modelo.Vuelo.Vuelo;
-import com.aterrizar.util.DateHelper;
-import org.junit.Before;
+import com.aterrizar.modelo.VueloAsiento.VueloAsiento;
+import com.aterrizar.modelo.VueloAsiento.VueloAsientoFilter;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class AerolineaProxyTest {
     private AerolineaProxy aerolineaProxy;
 
-    @Before
-    public void generarVuelos() {
-        AerolineaLanchitaImplementacion aerolineaLanchita = new AerolineaLanchitaImplementacion();
+    @Test
+    public void buscarVuelos_UsuarioEstandar_BuenosAiresBarcelona_TieneVuelosDisponibles() {
+        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
 
-        Vuelo vuelo1 = new Vuelo(
-                "AL"
-                ,"Buenos Aires"
-                , "Miami"
-                , DateHelper.parseToDate("13/05/2019")
-                , DateHelper.parseToDate("15/05/2019")
-        );
-        aerolineaLanchita.agregarVuelo(vuelo1);
-
-        aerolineaLanchita.agregarAsiento(new AsientoTurista(vuelo1, 100, new UbicacionVentanilla(), new EstadoAsientoDisponible()));
-        aerolineaLanchita.agregarAsiento(new AsientoTurista(vuelo1, 100, new UbicacionPasillo(), new EstadoAsientoReservado()));
-        aerolineaLanchita.agregarAsiento(new AsientoPrimeraClase(vuelo1, 300, new UbicacionCentro(), new EstadoAsientoDisponible()));
-        aerolineaLanchita.agregarAsiento(new AsientoPrimeraClase(vuelo1, 200, new UbicacionPasillo(), new EstadoAsientoDisponible()));
-
-
-        Vuelo vuelo2 = new Vuelo(
-                "AL"
-                ,"Buenos Aires"
-                , "Barcelona"
-                , DateHelper.parseToDate("17/05/2019")
-                , DateHelper.parseToDate("20/05/2019")
-        );
-
-        aerolineaLanchita.agregarVuelo(vuelo2);
-
-        aerolineaLanchita.agregarAsiento(new AsientoEjecutivo(vuelo2, 1000, new UbicacionCentro(), new EstadoAsientoDisponible()));
-        aerolineaLanchita.agregarAsiento(new AsientoEjecutivo(vuelo2, 1000, new UbicacionCentro(), new EstadoAsientoReservado()));
-        aerolineaLanchita.agregarAsiento(new AsientoTurista(vuelo2, 400, new UbicacionVentanilla(), new EstadoAsientoDisponible()));
-        aerolineaLanchita.agregarAsiento(new AsientoPrimeraClase(vuelo2, 500, new UbicacionPasillo(), new EstadoAsientoDisponible()));
+        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Arrays.asList(
+                        Arrays.asList("LCH 344-42","1000.00","E","C","D")
+                        , Arrays.asList("LCH 344-46","400.00","T","V","D")
+                ));
 
         aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
-    }
 
-    @Test
-    public void buscarVuelos_UsuarioEstandar_BuenosAiesBarcelona_TieneVuelosDisponibles() {
-        FiltroVueloAsiento filtroVueloAsiento = new FiltroVueloAsiento(
-                null
+        VueloAsientoFilter filtro = new VueloAsientoFilter(
+                Destino.BUE
+                , Destino.BAR
+                , "20190510"
                 , null
-                , null
-                , null
-                , new AsientoTurista()
                 , null
         );
-        List<Asiento> asientos = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
 
-        assertFalse(asientos.isEmpty());
+        Usuario usuario = new UsuarioNoRegistrado("Ricardo \"EL COMANDANTE\"", "Fort)", 37422007);
+
+        List<VueloAsiento> vueloAsientos = aerolineaProxy.buscarAsientos(filtro, usuario);
+
+        assertFalse(vueloAsientos.isEmpty());
     }
 
     @Test
     public void buscarVuelos_UsuarioEstandar_BuenosAiesTokio_NoTieneVuelosDisponibles() {
-        FiltroVueloAsiento filtroVueloAsiento = new FiltroVueloAsiento(
-                "BUE"
-                , "TOK"
-                , null
-                , null
+        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
+
+        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Arrays.asList());
+
+        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+
+        VueloAsientoFilter filtro = new VueloAsientoFilter(
+                Destino.BUE
+                , Destino.TOK
+                , "20190510"
                 , new AsientoTurista()
-                , new UbicacionVentanilla()
+                , Ubicacion.Ventanilla
         );
-        List<Asiento> asientos = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
 
-        assertTrue(asientos.isEmpty());
-    }
+        Usuario usuario = new UsuarioNoRegistrado("Ricardo \"EL COMANDANTE\"", "Fort)", 37422007);
 
+        List<VueloAsiento> vueloAsientos = aerolineaProxy.buscarAsientos(filtro, usuario);
 
-    @Test
-    public void buscarVuelos_UsuarioEstandar_NoTieneVuelosDisponibles() {
-        FiltroVueloAsiento filtroVueloAsiento = new FiltroVueloAsiento(
-                "BUE"
-                , "TOK"
-                , null
-                , null
-                , new AsientoTurista()
-                , new UbicacionVentanilla()
-        );
-        List<Asiento> asientos = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
-
-        assertTrue(asientos.isEmpty());
+        assertTrue(vueloAsientos.isEmpty());
     }
 
     @Test
     public void buscarVuelos_UsuarioNoRegistrado_AsientoQueVale100_TieneRecargo() {
-        FiltroVueloAsiento filtroVueloAsiento = new FiltroVueloAsiento(
-                "BUE"
-                , "MIA"
-                , null
-                , null
+        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
+
+        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Arrays.asList(
+                        Arrays.asList("LCH 622-12","115.00","T","V","D")
+                ));
+
+        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+
+        VueloAsientoFilter filtro = new VueloAsientoFilter(
+                Destino.BUE
+                , Destino.MIA
+                , "20190513"
                 , new AsientoTurista()
-                , new UbicacionVentanilla()
+                , Ubicacion.Ventanilla
         );
         Usuario usuario = new UsuarioNoRegistrado("Ricardo \"EL COMANDANTE\"", "Fort)", 37422007);
 
-        List<Asiento> asientos = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
+        List<VueloAsiento> vueloAsientos = aerolineaProxy.buscarAsientos(filtro, usuario);
+        Double precioTotal = Double.valueOf(Math.round(vueloAsientos.get(0).getAsiento().getPrecio()));
 
         // precio asiento = 100
         // impuestos asiento = 15
         // recargo = 20
         // TOTAL = 135
-        assertEquals("El asiento no tiene recargo", 135, Math.round(asientos.get(0).getPrecioTotal() + usuario.getRecargo()));
+        System.out.println(precioTotal);
+        assertTrue("El asiento no tiene recargo", precioTotal.equals(135.00));
     }
 
     @Test
     public void comprar_UsuarioEstandar_ReservaUnAsientoDisponible() throws AsientoNoDisponibleException {
-        FiltroVueloAsiento filtroVueloAsiento = new FiltroVueloAsiento(
-                "BUE"
-                , "MIA"
-                , null
-                , null
-                , new AsientoTurista()
-                , new UbicacionVentanilla()
-        );
-        List<Asiento> asientos = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
-        Asiento asiento = asientos.get(0);
-        this.aerolineaProxy.comprar(asiento.getCodigoAsiento());
+        String codigoAsiento = "LCH 622-12";
 
-        assertFalse("No se ha reservado el asiento", asiento.getEstado().estaDisponible());
+        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
+
+        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Arrays.asList(
+                        Arrays.asList(codigoAsiento,"1000.00","T","V","D")
+                ));
+
+        doAnswer(invocationOnMock -> {
+            when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                    .thenAnswer(i -> Arrays.asList(Arrays.asList(invocationOnMock.getArguments()[0],"1000.00","T","V","R")));
+            this.aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+            return null;
+        }).when(aerolineaLanchita).comprar(codigoAsiento);
+
+        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+
+        VueloAsientoFilter filtro = new VueloAsientoFilter(
+                Destino.BUE
+                , Destino.MIA
+                , "20190513"
+                , new AsientoTurista()
+                , Ubicacion.Ventanilla
+        );
+        Usuario usuario = new UsuarioEstandar("Ricardo \"EL COMANDANTE\"", "Fort)", 37422007);
+
+        List<VueloAsiento> vueloAsientosAntesDeComprar = aerolineaProxy.buscarAsientos(filtro, usuario);
+        this.aerolineaProxy.comprar(codigoAsiento);
+        List<VueloAsiento> vueloAsientosDespuesDeComprar = aerolineaProxy.buscarAsientos(filtro, usuario);
+
+        Asiento asientoAntesDeComprar = vueloAsientosAntesDeComprar.get(0).getAsiento();
+        Asiento asientoDespuesDeComprar = vueloAsientosDespuesDeComprar.get(0).getAsiento();
+
+        assertTrue("El asiento está disponible", asientoAntesDeComprar.getEstadoAsiento().estaDisponible() != asientoDespuesDeComprar.getEstadoAsiento().estaDisponible());
     }
 
     @Test
     public void comprar_UsuarioEstandar_ReservaUnAsientoDisponibleYSeEliminaDelVuelo() throws AsientoNoDisponibleException {
-        FiltroVueloAsiento filtroVueloAsiento = new FiltroVueloAsiento(
-                "BUE"
-                , "MIA"
-                , null
-                , null
-                , new AsientoTurista()
-                , new UbicacionVentanilla()
-        );
-        List<Asiento> asientos = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
-        Asiento asiento = asientos.get(0);
-        this.aerolineaProxy.comprar(asiento.getCodigoAsiento());
+        String codigoAsiento = "LCH 622-12";
 
-        List<Asiento> asientosRegistradosDespuesDeComprar = aerolineaProxy.buscarAsientos(filtroVueloAsiento);
-        assertFalse("No se ha eliminado el asiento", asientosRegistradosDespuesDeComprar.contains(asiento));
+        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
+
+        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Arrays.asList(
+                        Arrays.asList(codigoAsiento,"1000.00","T","V","D")
+                ));
+
+        doAnswer(invocationOnMock -> {
+            when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+                    .thenAnswer(i -> Arrays.asList());
+            this.aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+            return null;
+        }).when(aerolineaLanchita).comprar(codigoAsiento);
+
+        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+
+        VueloAsientoFilter filtro = new VueloAsientoFilter(
+                Destino.BUE
+                , Destino.MIA
+                , "20190513"
+                , new AsientoTurista()
+                , Ubicacion.Ventanilla
+        );
+        Usuario usuario = new UsuarioEstandar("Ricardo \"EL COMANDANTE\"", "Fort)", 37422007);
+
+        List<VueloAsiento> vueloAsientosAntesDeComprar = aerolineaProxy.buscarAsientos(filtro, usuario);
+        this.aerolineaProxy.comprar(codigoAsiento);
+        List<VueloAsiento> vueloAsientosDespuesDeComprar = aerolineaProxy.buscarAsientos(filtro, usuario);
+
+        assertTrue("El asiento aún existe", !vueloAsientosAntesDeComprar.isEmpty() && vueloAsientosDespuesDeComprar.isEmpty());
+    }
+
+    @Test(expected = AsientoNoDisponibleException.class)
+    public void comprar_UsuarioEstandar_NoPuedeComprarUnAsientoReservado() throws AsientoNoDisponibleException {
+        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
+        doThrow(new AsientoLanchitaNoDisponibleException("El asiento ya se encuentra reservado")).when(aerolineaLanchita).comprar(anyString());
+        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+
+        this.aerolineaProxy.comprar("LCH 622-12");
     }
 }

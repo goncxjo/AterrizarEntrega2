@@ -2,7 +2,8 @@ package com.aterrizar.modelo.Usuario;
 
 import com.aterrizar.exception.TipoUsuarioNoDisponibleException;
 import com.aterrizar.modelo.Asiento.Asiento;
-import com.aterrizar.modelo.FiltroVueloAsiento;
+import com.aterrizar.modelo.VueloAsiento.VueloAsiento;
+import com.aterrizar.modelo.VueloAsiento.VueloAsientoFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,8 @@ public abstract class Usuario {
     protected String nombre;
     protected String apellido;
     protected int DNI;
-    protected List<FiltroVueloAsiento> historialAsientos;
-    protected List<Asiento> asientosComprados;
+    protected List<VueloAsientoFilter> historialAsientos;
+    protected List<VueloAsiento> asientosComprados;
 
     public Usuario(String nombre, String apellido, int DNI) {
         this.nombre = nombre;
@@ -56,15 +57,15 @@ public abstract class Usuario {
         this.DNI = DNI;
     }
 
-    public List<FiltroVueloAsiento> getHistorialAsientos() {
+    public List<VueloAsientoFilter> getHistorialAsientos() {
         return this.historialAsientos;
     }
 
-    public void agregarVueloAlHistorial(FiltroVueloAsiento vuelo) { this.historialAsientos.add(vuelo); }
+    public void agregarVueloAlHistorial(VueloAsientoFilter vuelo) { this.historialAsientos.add(vuelo); }
 
-    public List<Asiento> getAsientosComprados() { return this.asientosComprados; }
+    public List<VueloAsiento> getAsientosComprados() { return this.asientosComprados; }
 
-    public void agregarVueloComprado(Asiento asiento) { this.asientosComprados.add(asiento); }
+    public void agregarVueloComprado(VueloAsiento vueloAsiento) { this.asientosComprados.add(vueloAsiento); }
 
     public float getRecargo() { return 0; }
 
