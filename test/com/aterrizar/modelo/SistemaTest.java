@@ -9,11 +9,9 @@ import com.aterrizar.modelo.Usuario.Usuario;
 import com.aterrizar.modelo.Usuario.UsuarioNoRegistrado;
 import com.aterrizar.modelo.VueloAsiento.VueloAsiento;
 import com.aterrizar.modelo.VueloAsiento.VueloAsientoFilter;
-import com.aterrizar.util.DateHelper;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -21,24 +19,27 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class SistemaTest {
 	private Sistema sistema;
 	private AerolineaProxy aerolineaProxy;
-	
-	@Before
-    public void generarVuelos() {
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
+	@Mock AerolineaLanchita mockLanchita;
 
-		when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		
+		when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(Arrays.asList(
 						Arrays.asList("LCH 344-42","1000.00","E","C","D")
 						, Arrays.asList("LCH 344-46","400.00","T","V","D")
 				));
 
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
-        sistema = new Sistema(aerolineaProxy);
-    }
+		aerolineaProxy = new AerolineaProxy(mockLanchita);
+		sistema = new Sistema(aerolineaProxy);
+	}
 
 	@Test
 	public void buscarAsientos_UnUsuarioBuscaAsientosYEncuentra() {
@@ -58,9 +59,7 @@ public class SistemaTest {
 
 	@Test
 	public void comprarAsiento_UnUsuarioCompraUnAsiento() throws AsientoNoDisponibleException {
-		AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-
-		when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+		when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(Arrays.asList(
 						Arrays.asList("LCH 344-46","400.00","T","V","D")
 				));

@@ -11,7 +11,12 @@ import com.aterrizar.modelo.Usuario.UsuarioEstandar;
 import com.aterrizar.modelo.Usuario.UsuarioNoRegistrado;
 import com.aterrizar.modelo.VueloAsiento.VueloAsiento;
 import com.aterrizar.modelo.VueloAsiento.VueloAsientoFilter;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,20 +25,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AerolineaProxyTest {
-    private AerolineaProxy aerolineaProxy;
+
+    AerolineaProxy aerolineaProxy;
+
+    @Mock AerolineaLanchita mockLanchita;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void buscarVuelos_UsuarioEstandar_BuenosAiresBarcelona_TieneVuelosDisponibles() {
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-
-        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+        when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Arrays.asList(
                         Arrays.asList("LCH 344-42","1000.00","E","C","D")
                         , Arrays.asList("LCH 344-46","400.00","T","V","D")
                 ));
 
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        aerolineaProxy = new AerolineaProxy(mockLanchita);
 
         VueloAsientoFilter filtro = new VueloAsientoFilter(
                 Destino.BUE
@@ -52,12 +64,10 @@ public class AerolineaProxyTest {
 
     @Test
     public void buscarVuelos_UsuarioEstandar_BuenosAiesTokio_NoTieneVuelosDisponibles() {
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-
-        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+        when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Arrays.asList());
 
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        aerolineaProxy = new AerolineaProxy(mockLanchita);
 
         VueloAsientoFilter filtro = new VueloAsientoFilter(
                 Destino.BUE
@@ -76,14 +86,12 @@ public class AerolineaProxyTest {
 
     @Test
     public void buscarVuelos_UsuarioNoRegistrado_AsientoQueVale100_TieneRecargo() {
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-
-        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+        when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Arrays.asList(
                         Arrays.asList("LCH 622-12","115.00","T","V","D")
                 ));
 
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        aerolineaProxy = new AerolineaProxy(mockLanchita);
 
         VueloAsientoFilter filtro = new VueloAsientoFilter(
                 Destino.BUE
@@ -109,21 +117,19 @@ public class AerolineaProxyTest {
     public void comprar_UsuarioEstandar_ReservaUnAsientoDisponible() throws AsientoNoDisponibleException {
         String codigoAsiento = "LCH 622-12";
 
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-
-        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+        when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Arrays.asList(
                         Arrays.asList(codigoAsiento,"1000.00","T","V","D")
                 ));
 
         doAnswer(invocationOnMock -> {
-            when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+            when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                     .thenAnswer(i -> Arrays.asList(Arrays.asList(invocationOnMock.getArguments()[0],"1000.00","T","V","R")));
-            this.aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+            this.aerolineaProxy = new AerolineaProxy(mockLanchita);
             return null;
-        }).when(aerolineaLanchita).comprar(codigoAsiento);
+        }).when(mockLanchita).comprar(codigoAsiento);
 
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        aerolineaProxy = new AerolineaProxy(mockLanchita);
 
         VueloAsientoFilter filtro = new VueloAsientoFilter(
                 Destino.BUE
@@ -148,21 +154,19 @@ public class AerolineaProxyTest {
     public void comprar_UsuarioEstandar_ReservaUnAsientoDisponibleYSeEliminaDelVuelo() throws AsientoNoDisponibleException {
         String codigoAsiento = "LCH 622-12";
 
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-
-        when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+        when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Arrays.asList(
                         Arrays.asList(codigoAsiento,"1000.00","T","V","D")
                 ));
 
         doAnswer(invocationOnMock -> {
-            when(aerolineaLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
+            when(mockLanchita.asientosDisponibles(anyString(), anyString(), anyString(), anyString()))
                     .thenAnswer(i -> Arrays.asList());
-            this.aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+            this.aerolineaProxy = new AerolineaProxy(mockLanchita);
             return null;
-        }).when(aerolineaLanchita).comprar(codigoAsiento);
+        }).when(mockLanchita).comprar(codigoAsiento);
 
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        aerolineaProxy = new AerolineaProxy(mockLanchita);
 
         VueloAsientoFilter filtro = new VueloAsientoFilter(
                 Destino.BUE
@@ -182,9 +186,8 @@ public class AerolineaProxyTest {
 
     @Test(expected = AsientoNoDisponibleException.class)
     public void comprar_UsuarioEstandar_NoPuedeComprarUnAsientoReservado() throws AsientoNoDisponibleException {
-        AerolineaLanchita aerolineaLanchita = mock(AerolineaLanchita.class);
-        doThrow(new AsientoLanchitaNoDisponibleException("El asiento ya se encuentra reservado")).when(aerolineaLanchita).comprar(anyString());
-        aerolineaProxy = new AerolineaProxy(aerolineaLanchita);
+        doThrow(new AsientoLanchitaNoDisponibleException("El asiento ya se encuentra reservado")).when(mockLanchita).comprar(anyString());
+        aerolineaProxy = new AerolineaProxy(mockLanchita);
 
         this.aerolineaProxy.comprar("LCH 622-12");
     }

@@ -6,7 +6,6 @@ import com.aterrizar.exception.AsientoNoDisponibleException;
 import com.aterrizar.modelo.Asiento.*;
 import com.aterrizar.modelo.Ubicacion;
 import com.aterrizar.modelo.Usuario.Usuario;
-import com.aterrizar.modelo.Vuelo;
 import com.aterrizar.modelo.VueloAsiento.VueloAsientoFilter;
 import com.aterrizar.modelo.VueloAsiento.VueloAsiento;
 import com.aterrizar.modelo.VueloAsiento.VueloAsientoBuilder;
